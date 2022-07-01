@@ -2,16 +2,18 @@
 -- The SQL in this file will be executed when you run `npm run setup-db`
 
 DROP TABLE IF EXISTS list;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS users CASCADE; 
 
 CREATE TABLE list (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  completed BOOLEAN,
-)
+  user_id BIGINT, 
+  description VARCHAR NOT NULL,
+  completed BOOLEAN NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
 
 CREATE TABLE users (
-  id BIGING GENERAETD ALWAYS AS IDENTITY PRIMARY KEY,
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
   email TEXT NOT NULL,
