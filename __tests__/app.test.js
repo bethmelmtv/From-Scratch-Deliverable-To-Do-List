@@ -24,7 +24,7 @@ describe('backend-express-template routes', () => {
     expect(res.body).toEqual({
       id: expect.any(String),
       firstName,
-      lastName,
+      `lastName`,
       email,
     });
   });
