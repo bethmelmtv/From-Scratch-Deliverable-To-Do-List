@@ -12,6 +12,13 @@ const mockUser = {
   password: '232444242422',
 };
 
+const mockUser2 = {
+  firstName: 'Martha',
+  lastName: 'User',
+  email: 'martha@alchemy.com',
+  password: '232444242422',
+};
+
 const registerAndLogin = async (userProps = {}) => {
   const password = userProps.password ?? mockUser.password;
 
@@ -46,10 +53,8 @@ describe('items', () => {
   });
 
   it('GET /api/v1/todos returns all items associated with the authenticated User', async () => {
-    // create a user
     const [agent, user] = await registerAndLogin();
-    // add a second user with items
-    const aUser = await UserService.create(mockUser);
+    const user2 = await UserService.create(mockUser2);
     const user1Item = await Item.insert({
       description: 'need to get hair dyed',
       completed: false,
@@ -58,7 +63,7 @@ describe('items', () => {
     await Item.insert({
       description: 'need to go grocery shopping',
       completed: false,
-      user_id: aUser.id,
+      user_id: user2.id,
     });
     const resp = await agent.get('/api/v1/todos');
     expect(resp.status).toEqual(200);
