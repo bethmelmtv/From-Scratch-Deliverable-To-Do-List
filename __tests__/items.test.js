@@ -35,7 +35,7 @@ describe('items', () => {
   it('POST /api/v1/todos creates a new todo list', async () => {
     const [agent, user] = await registerAndLogin();
     const newToDo = { descriptiton: 'need to work out', completed: false };
-    const resp = await agent.post('/api/v1/items').send(newToDo);
+    const resp = await agent.post('/api/v1/todos').send(newToDo);
     expect(resp.status).toEqual(200);
     expect(resp.body).toEqual({
       id: expect.any(String),
@@ -43,5 +43,25 @@ describe('items', () => {
       description: newToDo.descriptiton,
       completed: false,
     });
+  });
+
+  it('GET /api/v1/todos returns all items associated with the authenticated User', async () => {
+    // create a user
+    const [agent, user] = await registerAndLogin();
+    // add a second user with items
+    const aUser = await UserService.create(mockUser);
+    const user1Item = await Item.insert({
+      description: 'need to get hair dyed',
+      completed: false,
+      user_id: user.id,
+    });
+    await Item.insert({
+      description: 'need to go grocery shopping',
+      completed: false,
+      user_id: aUser.id,
+    });
+    const resp = await agent.get('/api/v1/todos');
+    expect(resp.status).toEqual(200);
+    expect(resp.body).toEqual([user1Item]);
   });
 });
