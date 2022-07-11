@@ -35,24 +35,23 @@ describe('items', () => {
   beforeEach(() => {
     return setup(pool);
   });
-  afterAll(() => {
-    pool.end();
-  });
 
-  it('POST /api/v1/todos creates a new todo list', async () => {
+  it.only('POST /api/v1/todos creates a new todo item', async () => {
     const [agent, user] = await registerAndLogin();
-    const newToDo = { descriptiton: 'need to work out', completed: false };
+    console.log(agent, user, 'agent and user');
+    const newToDo = { description: 'need to work out', completed: false };
     const resp = await agent.post('/api/v1/todos').send(newToDo);
+    console.log(resp.body, 'RESPONSE BODY');
     expect(resp.status).toEqual(200);
     expect(resp.body).toEqual({
       id: expect.any(String),
       user_id: user.id,
-      description: newToDo.descriptiton,
+      description: newToDo.description,
       completed: false,
     });
   });
 
-  it('GET /api/v1/todos returns all items associated with the authenticated User', async () => {
+  it('GET /api/v1/todos returns all todo items associated with the authenticated User', async () => {
     const [agent, user] = await registerAndLogin();
     const user2 = await UserService.create(mockUser2);
     const user1Item = await Item.insert({
@@ -60,13 +59,43 @@ describe('items', () => {
       completed: false,
       user_id: user.id,
     });
+    console.log(user1Item);
     await Item.insert({
       description: 'need to go grocery shopping',
       completed: false,
       user_id: user2.id,
     });
     const resp = await agent.get('/api/v1/todos');
-    expect(resp.status).toEqual(200);
+    // expect(resp.status).toEqual(200);
     expect(resp.body).toEqual([user1Item]);
+  });
+
+  it('GET /api/v1/todos should return a 401 if not authenticated', async () => {
+    const resp = await request(app).get('/api/v1/todos');
+    expect(resp.status).toEqual(401);
+  });
+
+  it('UPDATE /api/v1/todos/:id should update an todo', async () => {
+    const [agent, user] = await registerAndLogin();
+    const resp = await (
+      await request(app).put('api/v1/todos/update/1')
+    ).send({
+      description: 'get some ice cream',
+    });
+    console.log(resp.body);
+    expect(resp.status).toEqual(200);
+    expect(resp.body.descriptiton).toEqual('get some ice cream');
+  });
+
+  it('DELETE /api/v1/todos/:id should delete an todo by id', async () => {
+    const [agent, user] = await registerAndLogin();
+    const resp = await request(app).delete('/api/v1/todos/delete/:id');
+    expect(resp.status).toEqual(200);
+
+    const { body } = await request(app).delete('api/v1/todos/1');
+    expect(body.id).toEqual(null);
+  });
+  afterAll(() => {
+    pool.end();
   });
 });
