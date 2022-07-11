@@ -36,7 +36,7 @@ describe('items', () => {
     return setup(pool);
   });
 
-  it.only('POST /api/v1/todos creates a new todo item', async () => {
+  it('POST /api/v1/todos creates a new todo item', async () => {
     const [agent, user] = await registerAndLogin();
     console.log(agent, user, 'agent and user');
     const newToDo = { description: 'need to work out', completed: false };

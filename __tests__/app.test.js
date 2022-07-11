@@ -41,12 +41,10 @@ describe('backend-express-template routes', () => {
     });
   });
 
-  xit('returns the current user', async () => {
+  it.only('returns the current user', async () => {
     const [agent, user] = await registerAndLogin();
     const me = await agent.get('/api/v1/users/me');
-    expect(me.body).toEqual({
-      ...user,
-    });
+    expect(me.body.email).toEqual(user.email);
   });
 
   afterAll(() => {
