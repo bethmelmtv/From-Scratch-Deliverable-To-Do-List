@@ -59,7 +59,6 @@ describe('items', () => {
       completed: false,
       user_id: user.id,
     });
-    console.log(user1Item);
     await Item.insert({
       description: 'need to go grocery shopping',
       completed: false,
@@ -75,16 +74,15 @@ describe('items', () => {
     expect(resp.status).toEqual(401);
   });
 
-  it('UPDATE /api/v1/todos/:id should update an todo', async () => {
+  it.only('UPDATE /api/v1/todos/:id should update an todo', async () => {
     const [agent, user] = await registerAndLogin();
-    const resp = await (
-      await request(app).put('api/v1/todos/update/1')
-    ).send({
+    const resp = await agent.post('/api/v1/todos/1').send({
       description: 'get some ice cream',
+      user_id: user.id,
     });
     console.log(resp.body);
     expect(resp.status).toEqual(200);
-    expect(resp.body.descriptiton).toEqual('get some ice cream');
+    expect(resp.body.description).toEqual('get some ice cream');
   });
 
   it('DELETE /api/v1/todos/:id should delete an todo by id', async () => {
