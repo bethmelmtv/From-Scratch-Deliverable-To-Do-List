@@ -74,7 +74,7 @@ describe('items', () => {
     expect(resp.status).toEqual(401);
   });
 
-  it.only('UPDATE /api/v1/todos/update/:id should update an todo', async () => {
+  it('UPDATE /api/v1/todos/update/:id should update an todo', async () => {
     const [agent, user] = await registerAndLogin();
     const resp = await agent.put('/api/v1/todos/1').send({
       description: 'get some ice cream',
@@ -86,12 +86,10 @@ describe('items', () => {
   });
 
   it('DELETE /api/v1/todos/:id should delete an todo by id', async () => {
-    const [agent, user] = await registerAndLogin();
-    const resp = await request(app).delete('/api/v1/todos/delete/:id');
+    const [agent] = await registerAndLogin();
+    const resp = await agent.delete('/api/v1/todos/1');
     expect(resp.status).toEqual(200);
-
-    const { body } = await request(app).delete('api/v1/todos/1');
-    expect(body.id).toEqual(null);
+    expect(resp.body.id).toEqual('1');
   });
   afterAll(() => {
     pool.end();
