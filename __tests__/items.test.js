@@ -72,7 +72,7 @@ describe('items', () => {
     expect(resp.status).toEqual(401);
   });
 
-  it.only('UPDATE /api/v1/todos/update/:id should update an todo', async () => {
+  it('UPDATE /api/v1/todos/update/:id should update an todo', async () => {
     const [agent] = await registerAndLogin();
     const newToDo = await agent //agent preserves cookie of logged in user
       .post('/api/v1/todos')
