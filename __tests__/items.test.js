@@ -87,7 +87,10 @@ describe('items', () => {
 
   it('DELETE /api/v1/todos/:id should delete an todo by id', async () => {
     const [agent] = await registerAndLogin();
-    const resp = await agent.delete('/api/v1/todos/1');
+    const toDo = await agent
+      .post('/api/v1/todos')
+      .send({ description: 'eat lunch' });
+    const resp = await agent.delete(`/api/v1/todos/${toDo.body.id}`);
     expect(resp.status).toEqual(200);
     expect(resp.body.id).toEqual('1');
   });
