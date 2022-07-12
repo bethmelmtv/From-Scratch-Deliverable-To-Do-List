@@ -38,10 +38,8 @@ describe('items', () => {
 
   it('POST /api/v1/todos creates a new todo item', async () => {
     const [agent, user] = await registerAndLogin();
-    console.log(agent, user, 'agent and user');
     const newToDo = { description: 'need to work out', completed: false };
     const resp = await agent.post('/api/v1/todos').send(newToDo);
-    console.log(resp.body, 'RESPONSE BODY');
     expect(resp.status).toEqual(200);
     expect(resp.body).toEqual({
       id: expect.any(String),
@@ -74,12 +72,14 @@ describe('items', () => {
     expect(resp.status).toEqual(401);
   });
 
-  it('UPDATE /api/v1/todos/update/:id should update an todo', async () => {
-    const [agent, user] = await registerAndLogin();
-    const resp = await agent.put('/api/v1/todos/1').send({
+  it.only('UPDATE /api/v1/todos/update/:id should update an todo', async () => {
+    const [agent] = await registerAndLogin();
+    const newToDo = await agent //agent preserves cookie of logged in user
+      .post('/api/v1/todos')
+      .send({ description: 'get some ice cream' });
+    const resp = await agent.put(`/api/v1/todos/${newToDo.body.id}`).send({
       description: 'get some ice cream',
-      completed: false,
-      user_id: user.id,
+      completed: true,
     });
     expect(resp.status).toEqual(200);
     expect(resp.body.description).toEqual('get some ice cream');
