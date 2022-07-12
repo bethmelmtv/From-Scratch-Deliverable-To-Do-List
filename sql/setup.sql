@@ -21,3 +21,7 @@ CREATE TABLE list (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+INSERT INTO list (description, completed)
+VALUES 
+('read a book', false),
+('study for programming class', false);

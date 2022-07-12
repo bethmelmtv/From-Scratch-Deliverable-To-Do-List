@@ -74,13 +74,13 @@ describe('items', () => {
     expect(resp.status).toEqual(401);
   });
 
-  it.only('UPDATE /api/v1/todos/:id should update an todo', async () => {
+  it.only('UPDATE /api/v1/todos/update/:id should update an todo', async () => {
     const [agent, user] = await registerAndLogin();
-    const resp = await agent.post('/api/v1/todos/1').send({
+    const resp = await agent.put('/api/v1/todos/1').send({
       description: 'get some ice cream',
+      completed: false,
       user_id: user.id,
     });
-    console.log(resp.body);
     expect(resp.status).toEqual(200);
     expect(resp.body.description).toEqual('get some ice cream');
   });
